@@ -1,0 +1,94 @@
+#spring:
+#  shardingsphere:
+#    datasource:
+#      ds0:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        password: 77661332
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        url: jdbc:mysql://localhost:3306/p2p_transaction_0?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+#        username: root
+#      ds1:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        password: 77661332
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        url: jdbc:mysql://localhost:3306/p2p_transaction_1?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+#        username: root
+#      names: ds0,ds1
+#    props:
+#      sql:
+#        show: true
+#    sharding:
+#      binding-tables: project,tender
+#      default-database-strategy:
+#        inline:
+#          algorithm-expression: ds$->{CONSUMER_ID % 2}
+#          sharding-column: CONSUMER_ID
+#      tables:
+#        project:
+#          actual-data-nodes: ds$Missingsuperscript or subscript argument->{0..1}.project_$->{0..1}
+#          table-strategy:
+#            inline:
+#              algorithm-expression: project_$->{ID % 2}
+#              sharding-column: ID
+#        tender:
+#          actual-data-nodes: ds$Missingsuperscript or subscript argument->{0..1}.tender_$->{0..1}
+#          table-strategy:
+#            inline:
+#              algorithm-expression: tender_$->{PROJECT_ID % 2}
+#              sharding-column: PROJECT_ID
+###
+###
+#spring:
+#  shardingsphere:
+#    enabled: true
+#    datasource:
+#      #指定数据源 名称可以自定义，注意：名称要跟后面的配置一致
+#      names: ds0,ds1
+#      #配置数据源的连接信息
+#      ds0:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        url: jdbc:mysql://localhost:3306/p2p_transaction_0?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+#        username: root
+#        password: 77661332
+#      ds1:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        url: jdbc:mysql://localhost:3306/p2p_transaction_1?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+#        username: root
+#        password: 77661332
+#    rules:
+#      sharding:
+#        props:
+#          #是否输出sql
+#          sql-show: true
+#        tables:
+#          #设置project表分库分表策略
+#          project:
+#            #需要进行分片的库中实际存在的表
+#            actual-data-nodes: ds$Missing superscript or subscript argument->{0..1}.project_$->{0..1}
+#            #分库策略
+#            database-strategy:
+#              standard:
+#                #根据id分库
+#                sharding-column: CONSUMER_ID
+#                sharding-algorithm-name: sharding-database-project
+#            #分表策略
+#            table-strategy:
+#              standard:
+#                #根据ID分表
+#                sharding-column: ID
+#                sharding-algorithm-name: sharding-table-project
+#
+#        #分库或者分表算法配置
+#        sharding-algorithms:
+#          #分库策略配置
+#          sharding-database-project:
+#            type: INLINE
+#            props:
+#              algorithm-expression: ds$->{CONSUMER_ID % 2}
+#          #分表策略配置
+#          sharding-table-project:
+#            type: INLINE
+#            props:
+#              algorithm-expression: project_$->{ID % 2}
