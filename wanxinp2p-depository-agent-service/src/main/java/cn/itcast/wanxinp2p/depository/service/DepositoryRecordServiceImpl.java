@@ -163,9 +163,8 @@ public class DepositoryRecordServiceImpl extends
                         platformNo + "&reqData=" + reqData);
         DepositoryResponseDTO<DepositoryBaseResponse> depositoryResponse = JSON
                 .parseObject(responseBody,
-                        new TypeReference<DepositoryResponseDTO<DepositoryBaseResponse>>()
-                        {
-                        });
+                        new TypeReference<DepositoryResponseDTO<DepositoryBaseResponse>>() {});
+        depositoryRecord.setResponseData(responseBody);
 // 响应后, 根据结果更新数据库( 进行签名判断 )
 // 判断签名(signature)是为 false, 如果是说明验签失败!
         if (!"false".equals(depositoryResponse.getSignature())) {

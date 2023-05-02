@@ -164,7 +164,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
 
     @Override
     public String projectsApprovalStatus(Long id, String approveStatus) {
-        //1.根据id查询标的信息并转换为DTO对象
+//1.根据id查询标的信息并转换为DTO对象
         Project project= getById(id);
         ProjectDTO projectDTO=convertProjectEntityToDTO(project);
 //2.生成流水号(不存在才生成)

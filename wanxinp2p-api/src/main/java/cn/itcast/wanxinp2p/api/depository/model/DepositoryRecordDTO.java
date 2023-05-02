@@ -1,4 +1,4 @@
-﻿package cn.itcast.wanxinp2p.api.depository.model;
+package cn.itcast.wanxinp2p.api.depository.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
