@@ -2,14 +2,12 @@ package cn.itcast.wanxinp2p.consumer.service;
 
 import cn.itcast.wanxinp2p.api.account.model.AccountDTO;
 import cn.itcast.wanxinp2p.api.account.model.AccountRegisterDTO;
-import cn.itcast.wanxinp2p.api.consumer.model.BankCardDTO;
-import cn.itcast.wanxinp2p.api.consumer.model.ConsumerDTO;
-import cn.itcast.wanxinp2p.api.consumer.model.ConsumerRegisterDTO;
-import cn.itcast.wanxinp2p.api.consumer.model.ConsumerRequest;
+import cn.itcast.wanxinp2p.api.consumer.model.*;
 import cn.itcast.wanxinp2p.api.depository.model.DepositoryConsumerResponse;
 import cn.itcast.wanxinp2p.api.depository.model.GatewayRequest;
 import cn.itcast.wanxinp2p.common.domain.*;
 import cn.itcast.wanxinp2p.common.util.CodeNoUtil;
+import cn.itcast.wanxinp2p.common.util.IDCardUtil;
 import cn.itcast.wanxinp2p.consumer.agent.AccountApiAgent;
 import cn.itcast.wanxinp2p.consumer.agent.DepositoryAgentApiAgent;
 import cn.itcast.wanxinp2p.consumer.common.ConsumerErrorCode;
@@ -26,6 +24,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 
 @Service
@@ -182,4 +182,26 @@ public class ConsumerServiceImpl extends ServiceImpl<ConsumerMapper, Consumer>
     private Consumer getByRequestNo(String requestNo){
         return getOne(Wrappers.<Consumer>lambdaQuery().eq(Consumer::getRequestNo,requestNo));
     }
+
+    @Override
+    public BorrowerDTO getBorrower(Long id) {
+        ConsumerDTO consumerDTO = get(id);
+        BorrowerDTO borrowerDTO = new BorrowerDTO();
+        BeanUtils.copyProperties(consumerDTO, borrowerDTO);
+        Map<String, String> cardInfo =
+                IDCardUtil.getInfo(borrowerDTO.getIdNumber());
+        borrowerDTO.setAge(new Integer(cardInfo.get("age")));
+        borrowerDTO.setBirthday(cardInfo.get("birthday"));
+        borrowerDTO.setGender(cardInfo.get("gender"));
+        return borrowerDTO;
+    }
+    private ConsumerDTO get(Long id) {
+        Consumer entity = getById(id);
+        if (entity == null) {
+            log.info("id为{}的用户信息不存在", id);
+            throw new BusinessException(ConsumerErrorCode.E_140101);
+        }
+        return convertConsumerEntityToDTO(entity);
+    }
+
 }
